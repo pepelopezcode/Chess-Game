@@ -39,6 +39,35 @@ function Piece({piece, colNumber, rowNumber}) {
    
     
   }
+
+  const rookMovement = () => {
+    /*
+    -know what row and column its on
+    -add all locs in the same row or column to available locs
+    -restrict if blocked
+    */
+    if(piece[1] == 'R'){
+      
+      const newMoves = []
+      for (let i = colNumber; i < 7; i++) {
+        console.log(i+1, rowNumber)
+      
+      }
+      for (let i = colNumber; i > 0; i--) {
+        console.log(i-1, rowNumber)
+        
+      }
+      for (let i = rowNumber; i < 7; i++){
+        console.log(i+1, colNumber)
+      }
+      for (let i = rowNumber; i > 7; i--){
+        console.log(i-1, colNumber)
+      }
+    }
+    
+
+
+  }
   
   const canTake = ( pieceLoc ) => { 
     
@@ -69,12 +98,12 @@ function Piece({piece, colNumber, rowNumber}) {
 
   const movePiece = ( ) => {
   
-    console.log(currPiece)
     
     if(piece == 'NA' && currPiece == '') {return}
     if (currPiece == ''){
       setCurrPiece({piece, from: { row: rowNumber, col: colNumber}})
       pawnMovement()
+      rookMovement()
       return
     }
     if(!checkIfPieceIsPartOfAvailableLocs()){
@@ -82,7 +111,6 @@ function Piece({piece, colNumber, rowNumber}) {
       setAvailableCordToMoveTo([])
     }
     if(checkIfPieceIsPartOfAvailableLocs()){
-      console.log(1)
       setBoardState(prevBoard => {
         const newBoard = prevBoard.map(boardRow => [...boardRow])
         newBoard[currPiece.from.row][currPiece.from.col] = 'NA'
