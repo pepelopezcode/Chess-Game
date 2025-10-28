@@ -10,6 +10,12 @@ function Piece({piece, colNumber, rowNumber}) {
 
   const isWhite = piece[0] == "W" ? true : false;
 
+  const checkIfLocInBoard = (locArray) => {
+    if(locArray[0] >= 0 && locArray[0] < 8 && locArray[1] >= 0 && locArray[1] < 8){
+      return locArray
+    }
+  }
+
   const pawnMovement = () => {
     
  
@@ -107,6 +113,58 @@ function Piece({piece, colNumber, rowNumber}) {
     }
   }
 
+  const bishopMovement = () => {
+
+    if(piece[1] == 'B'){
+      const newMoves = []
+      const directions = [
+        [-1, 1],
+        [1, 1],
+        [1, -1],
+        [-1, -1]
+      ]
+
+      for (const [r, c] of directions){
+        for (let i = 1; i < 8; i++) {
+          const row = rowNumber + r * i
+          const col = colNumber + c * i
+          if(checkIfLocInBoard([row, col])){
+            if(checkIfNotBlocked(row, col, piece[0])){
+              newMoves.push([row, col])
+            }
+          }
+        }
+      }
+      //old way but might need for later
+      // for (let i = 1; i < 8; i++) {
+      //   if(checkIfLocInBoard([rowNumber -i, colNumber +i])){
+      //     newMoves.push([rowNumber -i, colNumber +i])
+      //   }else{break}
+      // }
+      // for (let i = 1; i < 8; i++){
+      //   if(checkIfLocInBoard([rowNumber +i, colNumber +i])){
+      //     newMoves.push([rowNumber +i, colNumber +i])
+      //   }else{break}
+      // }
+      // for (let i = 1; i < 8; i++){
+      //   if(checkIfLocInBoard([rowNumber +i, colNumber -i])){
+      //     newMoves.push([rowNumber +i, colNumber -i])
+      //   }else{break}
+      // }
+      // for (let i = 1; i < 8; i++){
+      //   if(checkIfLocInBoard([rowNumber -i, colNumber -i])){
+      //     newMoves.push([rowNumber -i, colNumber -i])
+      //   }else{break}
+      // }
+
+      setAvailableCordToMoveTo(newMoves)
+    }
+
+
+
+
+  }
+
   const checkIfNotBlocked = ( row, col, pieceColor ) => {
     if( boardState[row][col][0] !== pieceColor){
       return true
@@ -149,6 +207,7 @@ function Piece({piece, colNumber, rowNumber}) {
       pawnMovement()
       rookMovement()
       knightMovement()
+      bishopMovement()
       return
     }
     if(!checkIfPieceIsPartOfAvailableLocs()){
