@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { AppContext } from '../App'
+import { createRoutesFromElements } from 'react-router-dom';
 
 
 
@@ -41,11 +42,7 @@ function Piece({piece, colNumber, rowNumber}) {
   }
 
   const rookMovement = () => {
-    /*
-    -know what row and column its on
-    -add all locs in the same row or column to available locs
-    -restrict if blocked
-    */
+    
     if(piece[1] == 'R'){
       
       const newMoves = []
@@ -53,8 +50,6 @@ function Piece({piece, colNumber, rowNumber}) {
         if(checkIfNotBlocked(rowNumber, i+1, piece[0])){
           newMoves.push([rowNumber, i+1])
         }else{break}
-        
-        
         
       
       }
@@ -85,6 +80,33 @@ function Piece({piece, colNumber, rowNumber}) {
 
   }
 
+  const knightMovement = () => {
+    if(piece[1] == 'N'){
+      const newMoves = []
+      const knightOffsets = [
+        [1,2],
+        [-1,2],
+        [2,1],
+        [2,-1],
+        [1,-2],
+        [-1,-2],
+        [-2,1],
+        [-2,-1]
+      ]
+      const knightMoves = knightOffsets
+        .map(([offsetRow, offsetCol]) => [rowNumber + offsetRow, colNumber + offsetCol])
+        .filter(([row, col]) => row >= 0 && row < 8 && col >= 0 && col < 8);
+      
+      for(let i = 0; i < knightMoves.length; i++){
+        if(checkIfNotBlocked(knightMoves[i][0], knightMoves[i][1], piece[0])){
+          newMoves.push(knightMoves[i])
+        }
+      }
+
+      setAvailableCordToMoveTo(newMoves)
+    }
+  }
+
   const checkIfNotBlocked = ( row, col, pieceColor ) => {
     if( boardState[row][col][0] !== pieceColor){
       return true
@@ -110,8 +132,8 @@ function Piece({piece, colNumber, rowNumber}) {
     
     for( let i = 0; i < availableCordToMoveTo.length; i++){
       
-      const [ r, c ] = availableCordToMoveTo[i]
-      if ( r === rowNumber && c === colNumber ){
+      const [ row, col ] = availableCordToMoveTo[i]
+      if ( row === rowNumber && col === colNumber ){
         return true
       }  
     }
@@ -126,6 +148,7 @@ function Piece({piece, colNumber, rowNumber}) {
       setCurrPiece({piece, from: { row: rowNumber, col: colNumber}})
       pawnMovement()
       rookMovement()
+      knightMovement()
       return
     }
     if(!checkIfPieceIsPartOfAvailableLocs()){
