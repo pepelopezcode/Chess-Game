@@ -11,7 +11,7 @@ function Piece({piece, colNumber, rowNumber}) {
 
   const pawnMovement = () => {
     
-
+ 
     if(piece[1] == 'P'){
 
     const newMoves = []  
@@ -50,23 +50,45 @@ function Piece({piece, colNumber, rowNumber}) {
       
       const newMoves = []
       for (let i = colNumber; i < 7; i++) {
-        console.log(i+1, rowNumber)
+        if(checkIfNotBlocked(rowNumber, i+1, piece[0])){
+          newMoves.push([rowNumber, i+1])
+        }else{break}
+        
+        
+        
       
       }
       for (let i = colNumber; i > 0; i--) {
-        console.log(i-1, rowNumber)
+        if(checkIfNotBlocked(rowNumber, i-1, piece[0])){
+          newMoves.push([rowNumber, i-1])
+        }else{break}
+        
         
       }
       for (let i = rowNumber; i < 7; i++){
-        console.log(i+1, colNumber)
+        if(checkIfNotBlocked(i+1, colNumber, piece[0])){
+          newMoves.push([i+1, colNumber])
+        }else{break}
+        
       }
-      for (let i = rowNumber; i > 7; i--){
-        console.log(i-1, colNumber)
+      for (let i = rowNumber; i > 0; i--){
+        if(checkIfNotBlocked(i-1, colNumber, piece[0])){
+          newMoves.push([i-1, colNumber])
+        }else{break}
+        
       }
+
+      setAvailableCordToMoveTo(newMoves)
     }
     
 
 
+  }
+
+  const checkIfNotBlocked = ( row, col, pieceColor ) => {
+    if( boardState[row][col][0] !== pieceColor){
+      return true
+    }else{ return false }
   }
   
   const canTake = ( pieceLoc ) => { 
