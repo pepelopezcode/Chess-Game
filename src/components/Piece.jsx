@@ -54,27 +54,42 @@ function Piece({piece, colNumber, rowNumber}) {
       const newMoves = []
       for (let i = colNumber; i < 7; i++) {
         if(checkIfNotBlocked(rowNumber, i+1, piece[0])){
-          newMoves.push([rowNumber, i+1])
+          if(canTake([rowNumber, i+1])){
+            newMoves.push([rowNumber, i+1])
+            break
+          }else{newMoves.push([rowNumber, i+1])}
         }else{break}
         
       
       }
       for (let i = colNumber; i > 0; i--) {
         if(checkIfNotBlocked(rowNumber, i-1, piece[0])){
-          newMoves.push([rowNumber, i-1])
+          if(canTake([rowNumber, i-1])){
+            newMoves.push([rowNumber, i-1])
+            break
+          }else{newMoves.push([rowNumber, i-1])}
+          
         }else{break}
         
         
       }
       for (let i = rowNumber; i < 7; i++){
         if(checkIfNotBlocked(i+1, colNumber, piece[0])){
-          newMoves.push([i+1, colNumber])
+          if(canTake([i+1, colNumber])){
+            newMoves.push([i+1, colNumber])
+            break
+          }else{newMoves.push([i+1, colNumber])}
+          
         }else{break}
         
       }
       for (let i = rowNumber; i > 0; i--){
         if(checkIfNotBlocked(i-1, colNumber, piece[0])){
-          newMoves.push([i-1, colNumber])
+          if(canTake([i-1, colNumber])){
+            newMoves.push([i-1, colNumber])
+            break
+          }else{newMoves.push([i-1, colNumber])}
+          
         }else{break}
         
       }
@@ -130,7 +145,11 @@ function Piece({piece, colNumber, rowNumber}) {
           const col = colNumber + c * i
           if(checkIfLocInBoard([row, col])){
             if(checkIfNotBlocked(row, col, piece[0])){
-              newMoves.push([row, col])
+              if(canTake([row, col])){
+                newMoves.push([row, col])
+                break
+              }else{newMoves.push([row, col])}
+              
             }
           }
         }
