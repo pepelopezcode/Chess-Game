@@ -49,7 +49,7 @@ function Piece({piece, colNumber, rowNumber}) {
 
   const rookMovement = () => {
     
-    if(piece[1] == 'R'){
+    if(piece[1] == 'R' || piece[1] == 'Q'){
       
       const newMoves = []
       for (let i = colNumber; i < 7; i++) {
@@ -130,7 +130,7 @@ function Piece({piece, colNumber, rowNumber}) {
 
   const bishopMovement = () => {
 
-    if(piece[1] == 'B'){
+    if(piece[1] == 'B' || piece[1] == 'Q'){
       const newMoves = []
       const directions = [
         [-1, 1],
