@@ -40,7 +40,7 @@ function Piece({piece, colNumber, rowNumber}) {
           newMoves.push(frontPieceLoc, secondFrontPieceLoc)
       }else{ newMoves.push(frontPieceLoc)}
     }
-    setAvailableCordToMoveTo(newMoves)  
+      return(newMoves)  
     
     }
    
@@ -94,7 +94,7 @@ function Piece({piece, colNumber, rowNumber}) {
         
       }
 
-      setAvailableCordToMoveTo(newMoves)
+      return(newMoves)
     }
     
 
@@ -124,7 +124,7 @@ function Piece({piece, colNumber, rowNumber}) {
         }
       }
 
-      setAvailableCordToMoveTo(newMoves)
+      return(newMoves)
     }
   }
 
@@ -176,7 +176,7 @@ function Piece({piece, colNumber, rowNumber}) {
       //   }else{break}
       // }
 
-      setAvailableCordToMoveTo(newMoves)
+      return(newMoves)
     }
 
 
@@ -207,12 +207,17 @@ function Piece({piece, colNumber, rowNumber}) {
 
   const checkIfPieceIsPartOfAvailableLocs = () => {
     
-    for( let i = 0; i < availableCordToMoveTo.length; i++){
-      
-      const [ row, col ] = availableCordToMoveTo[i]
-      if ( row === rowNumber && col === colNumber ){
-        return true
-      }  
+    for (let a = 0; a < availableCordToMoveTo.length; a++){
+      if(availableCordToMoveTo[a]){
+        for( let i = 0; i < availableCordToMoveTo[a].length; i++){
+
+          const [ row, col ] = availableCordToMoveTo[a][i]
+          if ( row === rowNumber && col === colNumber ){
+            return true
+          }  
+        }
+
+      }
     }
     return false
   }
@@ -223,10 +228,12 @@ function Piece({piece, colNumber, rowNumber}) {
     if(piece == 'NA' && currPiece == '') {return}
     if (currPiece == ''){
       setCurrPiece({piece, from: { row: rowNumber, col: colNumber}})
-      pawnMovement()
-      rookMovement()
-      knightMovement()
-      bishopMovement()
+      const newList = []
+      newList.push(pawnMovement())
+      newList.push(rookMovement())
+      newList.push(knightMovement())
+      newList.push(bishopMovement())
+      setAvailableCordToMoveTo(newList)
       return
     }
     if(!checkIfPieceIsPartOfAvailableLocs()){
