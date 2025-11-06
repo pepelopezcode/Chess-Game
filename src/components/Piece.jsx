@@ -216,7 +216,7 @@ function Piece({piece, colNumber, rowNumber}) {
             return true
           }  
         }
-//test
+//tesasnfjnasdjfnjabnsft
       }
     }
     return false
