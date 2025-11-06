@@ -179,10 +179,38 @@ function Piece({piece, colNumber, rowNumber}) {
       return(newMoves)
     }
 
-
-
-
   }
+
+  const kingMovement = () => {
+ 
+    if(piece[1] == 'K'){
+      const directions = [
+        [0, 1],
+        [1, 1],
+        [1, 0],
+        [1, -1],
+        [0, -1],
+        [-1, -1],
+        [-1, 0],
+        [-1, 1]
+      ]
+      const newMoves = []
+
+      for (const [r, c] of directions){
+        const row = rowNumber + r
+        const col = colNumber + c 
+        if(checkIfLocInBoard([row, col])){
+          if(checkIfNotBlocked(row, col, piece[0])){
+            if(canTake([row, col])){
+              newMoves.push([row, col])
+            }else{newMoves.push([row, col])}
+          }
+        }
+      }
+      return newMoves
+    }
+  }
+
 
   const checkIfNotBlocked = ( row, col, pieceColor ) => {
     if( boardState[row][col][0] !== pieceColor){
@@ -216,7 +244,6 @@ function Piece({piece, colNumber, rowNumber}) {
             return true
           }  
         }
-//tesasnfjnasdjfnjabnsft
       }
     }
     return false
@@ -233,6 +260,8 @@ function Piece({piece, colNumber, rowNumber}) {
       newList.push(rookMovement())
       newList.push(knightMovement())
       newList.push(bishopMovement())
+      newList.push(kingMovement())
+      console.log(newList)
       setAvailableCordToMoveTo(newList)
       return
     }
