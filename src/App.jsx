@@ -11,10 +11,13 @@ function App() {
   const [ currPiece, setCurrPiece ] = useState('');
   const [ touchedPiecesList, setTouchedPiecesList ] = useState([]);
   const [ availableCordToMoveTo, setAvailableCordToMoveTo ] = useState([]);
+  const [ isWhiteTurn, setIsWhiteTurn ] = useState(true);
 
   return (
     <AppContext.Provider
       value={{
+        isWhiteTurn,
+        setIsWhiteTurn,
         boardState,
         setBoardState,
         currPiece,

@@ -6,7 +6,7 @@ import { createRoutesFromElements } from 'react-router-dom';
 
 function Piece({piece, colNumber, rowNumber}) {
 
-  const { setBoardState, boardState, currPiece, setCurrPiece, touchedPiecesList, setTouchedPiecesList, availableCordToMoveTo, setAvailableCordToMoveTo } = useContext(AppContext)
+  const { isWhiteTurn, setIsWhiteTurn, setBoardState, boardState, currPiece, setCurrPiece, touchedPiecesList, setTouchedPiecesList, availableCordToMoveTo, setAvailableCordToMoveTo } = useContext(AppContext)
 
   const isWhite = piece[0] == "W" ? true : false;
 
@@ -251,9 +251,9 @@ function Piece({piece, colNumber, rowNumber}) {
 
   const movePiece = ( ) => {
   
-    
     if(piece == 'NA' && currPiece == '') {return}
     if (currPiece == ''){
+      if (isWhite != isWhiteTurn){return}
       setCurrPiece({piece, from: { row: rowNumber, col: colNumber}})
       const newList = []
       newList.push(pawnMovement())
@@ -261,7 +261,6 @@ function Piece({piece, colNumber, rowNumber}) {
       newList.push(knightMovement())
       newList.push(bishopMovement())
       newList.push(kingMovement())
-      console.log(newList)
       setAvailableCordToMoveTo(newList)
       return
     }
@@ -278,7 +277,7 @@ function Piece({piece, colNumber, rowNumber}) {
     })
       setCurrPiece('')
       setAvailableCordToMoveTo([])
-      
+      setIsWhiteTurn(!isWhiteTurn) 
     }
   }
 
