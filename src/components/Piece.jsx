@@ -207,15 +207,35 @@ function Piece({piece, colNumber, rowNumber}) {
   }
 
   const getAllMovesForColor = (color) => {
-    const listOfMovesForColor = []
+    let listOfMovesForColor = []
     for (let r = 0; r < 8; r++){
       for (let c = 0; c < 8; c++){
         if(color == boardState[r][c][0]){
-          listOfMovesForColor.push(getMovesForPiece(boardState[r][c], r, c))
+           listOfMovesForColor.push(...getMovesForPiece(boardState[r][c], r, c))
         }
       }
     }
     return listOfMovesForColor
+  }
+
+  const getLocOfKing = (color) => {
+    for (let r = 0; r < 8; r++){
+      for (let c = 0; c < 8; c++){
+        if (boardState[r][c] == `${color}K`){
+          return [r, c]
+        }
+      }
+    }
+  }
+
+  const isKingCheck = (color) => {
+    const kingLoc = getLocOfKing(color)
+    const oppColor = color == 'W' ? 'B' : 'W'
+    const allOppMoves = getAllMovesForColor(oppColor)
+    for (const move of allOppMoves){
+      if (JSON.stringify(move) === JSON.stringify(kingLoc)) return true
+    }
+    return false
   }
 
   const movePiece = ( ) => {
