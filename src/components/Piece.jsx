@@ -16,16 +16,13 @@ function Piece({piece, colNumber, rowNumber}) {
     }
   }
 
-  const pawnMovement = () => {
+  const pawnMovement = (pieceType, rowInfo, colInfo) => {
     
- 
-    if(piece[1] == 'P'){
-
     const newMoves = []  
-    const leftPieceLoc = [( isWhite ? rowNumber -1 : rowNumber +1 ), colNumber -1] 
-    const rightPieceLoc = [( isWhite ? rowNumber -1 : rowNumber +1 ), colNumber +1]
-    const frontPieceLoc = [( isWhite ? rowNumber -1 : rowNumber +1 ), colNumber ]
-    const secondFrontPieceLoc = [( isWhite ? rowNumber -2 : rowNumber +2 ), colNumber ]
+    const leftPieceLoc = [( isWhite ? rowInfo -1 : rowInfo +1 ), colInfo -1] 
+    const rightPieceLoc = [( isWhite ? rowInfo -1 : rowInfo +1 ), colInfo +1]
+    const frontPieceLoc = [( isWhite ? rowInfo -1 : rowInfo +1 ), colInfo ]
+    const secondFrontPieceLoc = [( isWhite ? rowInfo -2 : rowInfo +2 ), colInfo ]
     if(canTake(leftPieceLoc)){
       newMoves.push(leftPieceLoc)
     }
@@ -34,75 +31,48 @@ function Piece({piece, colNumber, rowNumber}) {
     }
       
     if( boardState[frontPieceLoc[0]][frontPieceLoc[1]] == 'NA' ){
-      if( isWhite && rowNumber == 6 ){
+      if( isWhite && rowInfo == 6 ){
         newMoves.push(frontPieceLoc, secondFrontPieceLoc)
-      }else if( !isWhite && rowNumber == 1){
+      }else if( !isWhite && rowInfo == 1){
           newMoves.push(frontPieceLoc, secondFrontPieceLoc)
       }else{ newMoves.push(frontPieceLoc)}
     }
       return(newMoves)  
     
-    }
-   
-    
   }
+  
 
-  const rookMovement = () => {
+  const rookMovement = (pieceType, rowInfo, colInfo) => {
     
-    if(piece[1] == 'R' || piece[1] == 'Q'){
       
       const newMoves = []
-      for (let i = colNumber; i < 7; i++) {
-        if(checkIfNotBlocked(rowNumber, i+1, piece[0])){
-          if(canTake([rowNumber, i+1])){
-            newMoves.push([rowNumber, i+1])
-            break
-          }else{newMoves.push([rowNumber, i+1])}
-        }else{break}
-        
-      
-      }
-      for (let i = colNumber; i > 0; i--) {
-        if(checkIfNotBlocked(rowNumber, i-1, piece[0])){
-          if(canTake([rowNumber, i-1])){
-            newMoves.push([rowNumber, i-1])
-            break
-          }else{newMoves.push([rowNumber, i-1])}
-          
-        }else{break}
-        
-        
-      }
-      for (let i = rowNumber; i < 7; i++){
-        if(checkIfNotBlocked(i+1, colNumber, piece[0])){
-          if(canTake([i+1, colNumber])){
-            newMoves.push([i+1, colNumber])
-            break
-          }else{newMoves.push([i+1, colNumber])}
-          
-        }else{break}
-        
-      }
-      for (let i = rowNumber; i > 0; i--){
-        if(checkIfNotBlocked(i-1, colNumber, piece[0])){
-          if(canTake([i-1, colNumber])){
-            newMoves.push([i-1, colNumber])
-            break
-          }else{newMoves.push([i-1, colNumber])}
-          
-        }else{break}
-        
-      }
+      const directions = [
+        [1, 0],
+        [0, -1],
+        [-1, 0],
+        [0, 1]
+      ]
 
-      return(newMoves)
-    }
-    
-
-
+      for (const [r, c] of directions){
+        for (let i=1; i < 8; i++){
+        const row = rowInfo + r * i 
+        const col = colInfo + c * i 
+          if(checkIfLocInBoard([row, col])){
+            if(checkIfNotBlocked(row, col, pieceType[0])){
+              if(canTake([row, col])){
+                newMoves.push([row, col])
+                break
+              }else{newMoves.push([row, col])}
+            }else break
+          }
+        }
+      }
+     return(newMoves)
   }
 
-  const knightMovement = () => {
-    if(piece[1] == 'N'){
+
+  const knightMovement = (pieceType, rowInfo, colInfo) => {
+    if(pieceType[1] == 'N'){
       const newMoves = []
       const knightOffsets = [
         [1,2],
@@ -115,22 +85,20 @@ function Piece({piece, colNumber, rowNumber}) {
         [-2,-1]
       ]
       const knightMoves = knightOffsets
-        .map(([offsetRow, offsetCol]) => [rowNumber + offsetRow, colNumber + offsetCol])
+        .map(([offsetRow, offsetCol]) => [rowInfo + offsetRow, colInfo + offsetCol])
         .filter(([row, col]) => row >= 0 && row < 8 && col >= 0 && col < 8);
       
       for(let i = 0; i < knightMoves.length; i++){
-        if(checkIfNotBlocked(knightMoves[i][0], knightMoves[i][1], piece[0])){
+        if(checkIfNotBlocked(knightMoves[i][0], knightMoves[i][1], pieceType[0])){
           newMoves.push(knightMoves[i])
         }
       }
-
       return(newMoves)
     }
   }
 
-  const bishopMovement = () => {
+  const bishopMovement = (pieceType, rowInfo, colInfo) => {
 
-    if(piece[1] == 'B' || piece[1] == 'Q'){
       const newMoves = []
       const directions = [
         [-1, 1],
@@ -138,52 +106,27 @@ function Piece({piece, colNumber, rowNumber}) {
         [1, -1],
         [-1, -1]
       ]
-
       for (const [r, c] of directions){
         for (let i = 1; i < 8; i++) {
-          const row = rowNumber + r * i
-          const col = colNumber + c * i
+          const row = rowInfo + r * i
+          const col = colInfo + c * i
           if(checkIfLocInBoard([row, col])){
-            if(checkIfNotBlocked(row, col, piece[0])){
+            if(checkIfNotBlocked(row, col, pieceType[0])){
               if(canTake([row, col])){
                 newMoves.push([row, col])
                 break
               }else{newMoves.push([row, col])}
               
-            }
+            }else break
           }
         }
       }
-      //old way but might need for later
-      // for (let i = 1; i < 8; i++) {
-      //   if(checkIfLocInBoard([rowNumber -i, colNumber +i])){
-      //     newMoves.push([rowNumber -i, colNumber +i])
-      //   }else{break}
-      // }
-      // for (let i = 1; i < 8; i++){
-      //   if(checkIfLocInBoard([rowNumber +i, colNumber +i])){
-      //     newMoves.push([rowNumber +i, colNumber +i])
-      //   }else{break}
-      // }
-      // for (let i = 1; i < 8; i++){
-      //   if(checkIfLocInBoard([rowNumber +i, colNumber -i])){
-      //     newMoves.push([rowNumber +i, colNumber -i])
-      //   }else{break}
-      // }
-      // for (let i = 1; i < 8; i++){
-      //   if(checkIfLocInBoard([rowNumber -i, colNumber -i])){
-      //     newMoves.push([rowNumber -i, colNumber -i])
-      //   }else{break}
-      // }
-
       return(newMoves)
-    }
 
   }
 
-  const kingMovement = () => {
+  const kingMovement = (pieceType, rowInfo, colInfo) => {
  
-    if(piece[1] == 'K'){
       const directions = [
         [0, 1],
         [1, 1],
@@ -195,12 +138,11 @@ function Piece({piece, colNumber, rowNumber}) {
         [-1, 1]
       ]
       const newMoves = []
-
       for (const [r, c] of directions){
-        const row = rowNumber + r
-        const col = colNumber + c 
+        const row = rowInfo + r
+        const col = colInfo + c 
         if(checkIfLocInBoard([row, col])){
-          if(checkIfNotBlocked(row, col, piece[0])){
+          if(checkIfNotBlocked(row, col, pieceType[0])){
             if(canTake([row, col])){
               newMoves.push([row, col])
             }else{newMoves.push([row, col])}
@@ -208,7 +150,6 @@ function Piece({piece, colNumber, rowNumber}) {
         }
       }
       return newMoves
-    }
   }
 
 
@@ -249,6 +190,22 @@ function Piece({piece, colNumber, rowNumber}) {
     return false
   }
 
+  const getMovesForPiece = (pieceType, rowInfo, colInfo) => {
+    switch (pieceType[1]) {
+      case 'P': return pawnMovement(pieceType, rowInfo, colInfo);
+      case 'R': return rookMovement(pieceType, rowInfo, colInfo);
+      case 'B': return bishopMovement(pieceType, rowInfo, colInfo);
+      case 'N': return knightMovement(pieceType, rowInfo, colinfo);
+      case 'Q': return [
+        ...rookMovement(pieceType, rowInfo, colInfo),
+        ...bishopMovement(pieceType, rowInfo, colInfo)
+      ]
+      case 'K': return kingMovement(pieceType, rowInfo, colInfo)
+    
+      default: return []
+    }
+  }
+
   const movePiece = ( ) => {
   
     if(piece == 'NA' && currPiece == '') {return}
@@ -256,11 +213,8 @@ function Piece({piece, colNumber, rowNumber}) {
       if (isWhite != isWhiteTurn){return}
       setCurrPiece({piece, from: { row: rowNumber, col: colNumber}})
       const newList = []
-      newList.push(pawnMovement())
-      newList.push(rookMovement())
-      newList.push(knightMovement())
-      newList.push(bishopMovement())
-      newList.push(kingMovement())
+      
+      newList.push(getMovesForPiece(piece, rowNumber, colNumber))
       setAvailableCordToMoveTo(newList)
       return
     }
