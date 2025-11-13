@@ -195,7 +195,7 @@ function Piece({piece, colNumber, rowNumber}) {
       case 'P': return pawnMovement(pieceType, rowInfo, colInfo);
       case 'R': return rookMovement(pieceType, rowInfo, colInfo);
       case 'B': return bishopMovement(pieceType, rowInfo, colInfo);
-      case 'N': return knightMovement(pieceType, rowInfo, colinfo);
+      case 'N': return knightMovement(pieceType, rowInfo, colInfo);
       case 'Q': return [
         ...rookMovement(pieceType, rowInfo, colInfo),
         ...bishopMovement(pieceType, rowInfo, colInfo)
@@ -204,6 +204,18 @@ function Piece({piece, colNumber, rowNumber}) {
     
       default: return []
     }
+  }
+
+  const getAllMovesForColor = (color) => {
+    const listOfMovesForColor = []
+    for (let r = 0; r < 8; r++){
+      for (let c = 0; c < 8; c++){
+        if(color == boardState[r][c][0]){
+          listOfMovesForColor.push(getMovesForPiece(boardState[r][c], r, c))
+        }
+      }
+    }
+    return listOfMovesForColor
   }
 
   const movePiece = ( ) => {
