@@ -206,32 +206,32 @@ function Piece({piece, colNumber, rowNumber}) {
     }
   }
 
-  const getAllMovesForColor = (color) => {
+  const getAllMovesForColor = (color, board) => {
     let listOfMovesForColor = []
     for (let r = 0; r < 8; r++){
       for (let c = 0; c < 8; c++){
-        if(color == boardState[r][c][0]){
-           listOfMovesForColor.push(...getMovesForPiece(boardState[r][c], r, c))
+        if(color == board[r][c][0]){
+           listOfMovesForColor.push(...getMovesForPiece(board[r][c], r, c))
         }
       }
     }
     return listOfMovesForColor
   }
 
-  const getLocOfKing = (color) => {
+  const getLocOfKing = (color, board) => {
     for (let r = 0; r < 8; r++){
       for (let c = 0; c < 8; c++){
-        if (boardState[r][c] == `${color}K`){
+        if (board[r][c] == `${color}K`){
           return [r, c]
         }
       }
     }
   }
 
-  const isKingCheck = (color) => {
-    const kingLoc = getLocOfKing(color)
+  const isKingCheck = (color, board) => {
+    const kingLoc = getLocOfKing(color, board)
     const oppColor = color == 'W' ? 'B' : 'W'
-    const allOppMoves = getAllMovesForColor(oppColor)
+    const allOppMoves = getAllMovesForColor(oppColor, board)
     for (const move of allOppMoves){
       if (JSON.stringify(move) === JSON.stringify(kingLoc)) return true
     }
@@ -255,16 +255,20 @@ function Piece({piece, colNumber, rowNumber}) {
       setAvailableCordToMoveTo([])
     }
     if(checkIfPieceIsPartOfAvailableLocs()){
-      setBoardState(prevBoard => {
-        const newBoard = prevBoard.map(boardRow => [...boardRow])
-        newBoard[currPiece.from.row][currPiece.from.col] = 'NA'
-        newBoard[rowNumber][colNumber] = currPiece.piece      
-        return newBoard
-    })
+      const newBoard = boardState.map(boardRow => [...boardRow])
+      newBoard[currPiece.from.row][currPiece.from.col] = 'NA'
+      newBoard[rowNumber][colNumber] = currPiece.piece      
+      if (isKingCheck(currPiece.piece[0], newBoard)){
+        console.log('king is undercheck')
+        setCurrPiece('')
+        setAvailableCordToMoveTo([])
+        return
+      }  
+      setBoardState(newBoard)
+    }
       setCurrPiece('')
       setAvailableCordToMoveTo([])
       setIsWhiteTurn(!isWhiteTurn) 
-    }
   }
 
   
