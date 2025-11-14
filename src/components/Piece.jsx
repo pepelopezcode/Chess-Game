@@ -6,7 +6,7 @@ import pieceImages from '../assets/Images.jsx'
 
 function Piece({piece, colNumber, rowNumber}) {
 
-  const { isWhiteTurn, setIsWhiteTurn, setBoardState, boardState, currPiece, setCurrPiece, touchedPiecesList, setTouchedPiecesList, availableCordToMoveTo, setAvailableCordToMoveTo } = useContext(AppContext)
+  const { setGraveyardList, isWhiteTurn, setIsWhiteTurn, setBoardState, boardState, currPiece, setCurrPiece, touchedPiecesList, setTouchedPiecesList, availableCordToMoveTo, setAvailableCordToMoveTo } = useContext(AppContext)
 
   const isWhite = piece[0] == "W" ? true : false;
 
@@ -238,6 +238,12 @@ function Piece({piece, colNumber, rowNumber}) {
     return false
   }
 
+  const sendToGraveyard = (board, row, col) => {
+    if (board[row][col] != 'NA'){
+      setGraveyardList(prev => [...prev, board[row][col]])
+    }
+  }
+
   const movePiece = ( ) => {
   
     if(piece == 'NA' && currPiece == '') {return}
@@ -258,6 +264,7 @@ function Piece({piece, colNumber, rowNumber}) {
       const newBoard = boardState.map(boardRow => [...boardRow])
       newBoard[currPiece.from.row][currPiece.from.col] = 'NA'
       newBoard[rowNumber][colNumber] = currPiece.piece      
+      sendToGraveyard(boardState, rowNumber, colNumber)
       if (isKingCheck(currPiece.piece[0], newBoard)){
         console.log('king is undercheck')
         setCurrPiece('')
@@ -271,27 +278,6 @@ function Piece({piece, colNumber, rowNumber}) {
       setAvailableCordToMoveTo([])
   }
 
-  
-  
-
-  //const pieceImages = {
-    //BR: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Chess_rdt60.png",
-    //BN: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Chess_ndt60.png",
-    //BB: "https://upload.wikimedia.org/wikipedia/commons/8/81/Chess_bdt60.png",
-    //BQ: "https://upload.wikimedia.org/wikipedia/commons/a/af/Chess_qdt60.png",
-    //BK: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Chess_kdt60.png",
-    //BP: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Chess_pdt60.png",
-
-    //WR: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Chess_rlt60.png",
-    //WN: "https://upload.wikimedia.org/wikipedia/commons/2/28/Chess_nlt60.png",
-    //WB: "https://upload.wikimedia.org/wikipedia/commons/9/9b/Chess_blt60.png",
-    //WQ: "https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt60.png",
-    //WK: "https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt60.png",
-    //WP: "https://upload.wikimedia.org/wikipedia/commons/0/04/Chess_plt60.png",
-    //NA: null
-  //}
-
-  
 
   return (
     <div className='piece' onClick={movePiece} >

@@ -12,7 +12,7 @@ function App() {
   const [ touchedPiecesList, setTouchedPiecesList ] = useState([]);
   const [ availableCordToMoveTo, setAvailableCordToMoveTo ] = useState([]);
   const [ isWhiteTurn, setIsWhiteTurn ] = useState(true);
-
+  const [ graveyardList, setGraveyardList ] = useState([]);
   return (
     <AppContext.Provider
       value={{
@@ -25,7 +25,9 @@ function App() {
         touchedPiecesList,
         setTouchedPiecesList,
         availableCordToMoveTo, 
-        setAvailableCordToMoveTo
+        setAvailableCordToMoveTo,
+        graveyardList,
+        setGraveyardList
       }}>
       <Routes>
         <Route path='/' element={<HomePage />} />
