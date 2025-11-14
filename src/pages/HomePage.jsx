@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import Board from '../components/Board'
+import Graveyard from '../components/Graveyard.jsx'
 import { AppContext } from '../App'
 
 function HomePage() {
@@ -9,8 +10,9 @@ function HomePage() {
   return (
     <div>
       <div>
-        {isWhiteTurn ? <div>white</div> : <div>black</div>}         
+        {isWhiteTurn ? <div>white</div> : <div>black</div>}
       </div>
+      <Graveyard />
       <Board />
     </div>
   )
