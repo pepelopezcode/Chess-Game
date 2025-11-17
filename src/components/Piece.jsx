@@ -264,13 +264,13 @@ function Piece({piece, colNumber, rowNumber}) {
       const newBoard = boardState.map(boardRow => [...boardRow])
       newBoard[currPiece.from.row][currPiece.from.col] = 'NA'
       newBoard[rowNumber][colNumber] = currPiece.piece      
-      sendToGraveyard(boardState, rowNumber, colNumber)
       if (isKingCheck(currPiece.piece[0], newBoard)){
         console.log('king is undercheck')
         setCurrPiece('')
         setAvailableCordToMoveTo([])
         return
       }  
+      sendToGraveyard(boardState, rowNumber, colNumber)
       setBoardState(newBoard)
       setIsWhiteTurn(!isWhiteTurn) 
     }
