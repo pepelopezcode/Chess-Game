@@ -19,10 +19,11 @@ function Piece({piece, colNumber, rowNumber}) {
   const pawnMovement = (pieceType, rowInfo, colInfo) => {
     
     const newMoves = []  
-    const leftPieceLoc = [( isWhite ? rowInfo -1 : rowInfo +1 ), colInfo -1] 
-    const rightPieceLoc = [( isWhite ? rowInfo -1 : rowInfo +1 ), colInfo +1]
-    const frontPieceLoc = [( isWhite ? rowInfo -1 : rowInfo +1 ), colInfo ]
-    const secondFrontPieceLoc = [( isWhite ? rowInfo -2 : rowInfo +2 ), colInfo ]
+    const isPawnWhite = pieceType[0] == "W" ? true : false
+    const leftPieceLoc = [( isPawnWhite ? rowInfo -1 : rowInfo +1 ), colInfo -1] 
+    const rightPieceLoc = [( isPawnWhite ? rowInfo -1 : rowInfo +1 ), colInfo +1]
+    const frontPieceLoc = [( isPawnWhite ? rowInfo -1 : rowInfo +1 ), colInfo ]
+    const secondFrontPieceLoc = [( isPawnWhite ? rowInfo -2 : rowInfo +2 ), colInfo ]
     if(canTake(leftPieceLoc)){
       newMoves.push(leftPieceLoc)
     }
@@ -31,9 +32,9 @@ function Piece({piece, colNumber, rowNumber}) {
     }
       
     if( boardState[frontPieceLoc[0]][frontPieceLoc[1]] == 'NA' ){
-      if( isWhite && rowInfo == 6 ){
+      if( isPawnWhite && rowInfo == 6 ){
         newMoves.push(frontPieceLoc, secondFrontPieceLoc)
-      }else if( !isWhite && rowInfo == 1){
+      }else if( !isPawnWhite && rowInfo == 1){
           newMoves.push(frontPieceLoc, secondFrontPieceLoc)
       }else{ newMoves.push(frontPieceLoc)}
     }
@@ -212,6 +213,7 @@ function Piece({piece, colNumber, rowNumber}) {
       for (let c = 0; c < 8; c++){
         if(color == board[r][c][0]){
            listOfMovesForColor.push(...getMovesForPiece(board[r][c], r, c))
+          console.log(getMovesForPiece(`BP`, r, c))
         }
       }
     }
