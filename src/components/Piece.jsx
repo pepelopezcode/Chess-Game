@@ -24,10 +24,10 @@ function Piece({piece, colNumber, rowNumber}) {
     const rightPieceLoc = [( isPawnWhite ? rowInfo -1 : rowInfo +1 ), colInfo +1]
     const frontPieceLoc = [( isPawnWhite ? rowInfo -1 : rowInfo +1 ), colInfo ]
     const secondFrontPieceLoc = [( isPawnWhite ? rowInfo -2 : rowInfo +2 ), colInfo ]
-    if(canTake(leftPieceLoc)){
+    if(canTake(leftPieceLoc, pieceType, boardState)){
       newMoves.push(leftPieceLoc)
     }
-    if(canTake(rightPieceLoc)){
+    if(canTake(rightPieceLoc, pieceType, boardState)){
       newMoves.push(rightPieceLoc)
     }
       
@@ -40,6 +40,21 @@ function Piece({piece, colNumber, rowNumber}) {
     }
       return(newMoves)  
     
+  }
+
+  const pawnMovementForKing = ( pieceType, rowInfo, colInfo, board) => {
+    const newMoves = []  
+    const isPawnWhite = pieceType[0] == "W" ? true : false
+    const leftPieceLoc = [( isPawnWhite ? rowInfo -1 : rowInfo +1 ), colInfo -1] 
+    const rightPieceLoc = [( isPawnWhite ? rowInfo -1 : rowInfo +1 ), colInfo +1]
+    if(canTake(leftPieceLoc, pieceType, boardState)){
+      newMoves.push(leftPieceLoc)
+    }
+    if(canTake(rightPieceLoc, pieceType, boardState)){
+      newMoves.push(rightPieceLoc)
+    }
+    return newMoves
+
   }
   
 
@@ -60,7 +75,7 @@ function Piece({piece, colNumber, rowNumber}) {
         const col = colInfo + c * i 
           if(checkIfLocInBoard([row, col])){
             if(checkIfNotBlocked(row, col, pieceType[0])){
-              if(canTake([row, col])){
+              if(canTake([row, col], pieceType, boardState)){
                 newMoves.push([row, col])
                 break
               }else{newMoves.push([row, col])}
@@ -113,7 +128,7 @@ function Piece({piece, colNumber, rowNumber}) {
           const col = colInfo + c * i
           if(checkIfLocInBoard([row, col])){
             if(checkIfNotBlocked(row, col, pieceType[0])){
-              if(canTake([row, col])){
+              if(canTake([row, col], pieceType, boardState)){
                 newMoves.push([row, col])
                 break
               }else{newMoves.push([row, col])}
@@ -144,7 +159,7 @@ function Piece({piece, colNumber, rowNumber}) {
         const col = colInfo + c 
         if(checkIfLocInBoard([row, col])){
           if(checkIfNotBlocked(row, col, pieceType[0])){
-            if(canTake([row, col])){
+            if(canTake([row, col], pieceType, boardState)){
               newMoves.push([row, col])
             }else{newMoves.push([row, col])}
           }
@@ -160,13 +175,13 @@ function Piece({piece, colNumber, rowNumber}) {
     }else{ return false }
   }
   
-  const canTake = ( pieceLoc ) => { 
+  const canTake = ( pieceLoc, pieceType, board ) => { 
     
     const rowCheck = (-1 < pieceLoc[0] && pieceLoc[0] < 8);
     const colCheck = (-1 < pieceLoc[1] && pieceLoc[1] < 8);
     if( rowCheck && colCheck ){
-      if( boardState[pieceLoc[0]][pieceLoc[1]] !== 'NA'){
-        if( boardState[pieceLoc[0]][pieceLoc[1]][0] !== piece[0] ){
+      if( board[pieceLoc[0]][pieceLoc[1]] !== 'NA'){
+        if( board[pieceLoc[0]][pieceLoc[1]][0] !== pieceType[0] ){
           return(true)
         }else {return(false) }
       }else {return(false) }
@@ -212,8 +227,10 @@ function Piece({piece, colNumber, rowNumber}) {
     for (let r = 0; r < 8; r++){
       for (let c = 0; c < 8; c++){
         if(color == board[r][c][0]){
-           listOfMovesForColor.push(...getMovesForPiece(board[r][c], r, c))
-          console.log(getMovesForPiece(`BP`, r, c))
+          if(board[r][c][1] == 'P'){
+            console.log(1)
+            listOfMovesForColor.push(...pawnMovementForKing(board[r][c], r, c, board))
+          }else{listOfMovesForColor.push(...getMovesForPiece(board[r][c], r, c))}
         }
       }
     }
